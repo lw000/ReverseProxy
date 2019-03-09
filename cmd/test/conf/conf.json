@@ -1,0 +1,7 @@
+{
+    "count": 10000,
+    "millisecond": 1,
+    "method": "get",
+	"url": "http://127.0.0.1:19090/add?a=111&b=2222",
+    "postUrl": "http://127.0.0.1:19090/add"
+}
