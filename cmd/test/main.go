@@ -86,5 +86,5 @@ func main() {
 
 	wg.Wait()
 
-	log.Println("[", time.Now().Sub(start), "]")
+	log.Println("[successCount:", successCount, "]", "[", time.Now().Sub(start), "]")
 }

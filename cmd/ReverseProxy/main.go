@@ -2,8 +2,9 @@ package main
 
 import (
 	"demo/ReverseProxy/cmd/ReverseProxy/config"
+	"demo/ReverseProxy/cmd/ReverseProxy/ws"
 	"fmt"
-	"log"
+	log "github.com/alecthomas/log4go"
 	"math/rand"
 	"net/http"
 	"net/http/httputil"
@@ -34,7 +35,7 @@ func NewMultipleHostsReverseProxy(proxys []*ProxyIpAddress) *httputil.ReversePro
 	directorHanlder := func(req *http.Request) {
 		proxy := proxys[rand.Int()%len(proxys)]
 		atomic.AddUint64(&proxy.Use, 1)
-		log.Printf("|%-20s | Use:%d", proxy.target.Host, proxy.Use)
+		log.Info("|%-20s | Use:%d", proxy.target.Host, proxy.Use)
 
 		req.URL.Scheme = proxy.target.Scheme
 		req.URL.Host = proxy.target.Host
@@ -53,7 +54,7 @@ func NewMultipleHostsReverseProxy(proxys []*ProxyIpAddress) *httputil.ReversePro
 	}
 
 	errorHandler := func(w http.ResponseWriter, r *http.Request, er error) {
-		log.Println(er)
+		log.Info(er)
 	}
 
 	return &httputil.ReverseProxy{Director: directorHanlder, ErrorHandler: errorHandler}
@@ -64,6 +65,8 @@ var (
 )
 
 func main() {
+	log.LoadConfiguration("./conf/log4go.xml")
+
 	cfg := config.NewConfig()
 	if er := cfg.Load("./conf/conf.json"); er != nil {
 		return
@@ -77,10 +80,12 @@ func main() {
 			},
 			Use: 0,
 		}
-		log.Println("backgroud", "|", proxy.target.Host)
+		log.Info("backgroud: %s", proxy.target.Host)
 		proxys = append(proxys, proxy)
 	}
 
+	go echo.RunEchoMain()
+
 	proxyHandler := NewMultipleHostsReverseProxy(proxys)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), proxyHandler))
+	log.Exit(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), proxyHandler))
 }

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package proxy;
+
+//请求注册服务
+message ReqRegService {
+    int32 srvId = 1;            //服务器ID
+    int32 srvType = 2;          //服务器类型
+    uint32 srvVersion = 3;      //服务器版本
+    string license = 4;         //授权码
+}
+
+//响应注册服务
+message AckRegService {
+    int32 code = 1;         //操作结果: 0-成功; 非0-失败
+    string msg = 2;        //描述消息
+}
+
+//请求更新服务配置
+message ReqUpdateConfig {
+    string host = 1;		//账号
+    uint32 priority = 4;	//优先级
+}
+
+//回应更新服务配置
+message AckUpdateConfig {
+    int32 code = 1;         //操作结果: 0-成功; 非0-失败
+    string msg = 2;        //描述消息
+}
