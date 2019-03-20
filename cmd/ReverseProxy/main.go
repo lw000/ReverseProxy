@@ -2,7 +2,7 @@ package main
 
 import (
 	"demo/ReverseProxy/cmd/ReverseProxy/config"
-	"demo/ReverseProxy/cmd/ReverseProxy/ws"
+	"demo/ReverseProxy/cmd/ReverseProxy/network"
 	"fmt"
 	log "github.com/alecthomas/log4go"
 	"math/rand"
@@ -84,7 +84,15 @@ func main() {
 		proxys = append(proxys, proxy)
 	}
 
-	go echo.RunEchoMain()
+	//go ws.RunEchoMain()
+
+	pk := network.New(1, 1, 1)
+	er := pk.Encode([]byte("111111111111111111111111"))
+	if er != nil {
+
+	}
+	//m := mux.NewRouter()
+	//log.Exit(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), m))
 
 	proxyHandler := NewMultipleHostsReverseProxy(proxys)
 	log.Exit(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), proxyHandler))

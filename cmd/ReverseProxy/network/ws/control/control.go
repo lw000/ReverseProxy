@@ -3,8 +3,8 @@ package control
 import (
 	"demo/ReverseProxy/constant"
 	"demo/ReverseProxy/protocol"
-	"tuyue/tuyue_common/ws/packet"
-	"tuyue/tuyue_common/ws/srv/hub"
+	"tuyue/tuyue_common/network/ws/packet"
+	"tuyue/tuyue_common/network/ws/srv/hub"
 
 	log "github.com/alecthomas/log4go"
 

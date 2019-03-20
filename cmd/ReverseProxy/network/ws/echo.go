@@ -1,11 +1,11 @@
-package echo
+package ws
 
 import (
 	"fmt"
 	"net/http"
 	_ "net/http/pprof"
 
-	"demo/ReverseProxy/cmd/ReverseProxy/ws/control"
+	"demo/ReverseProxy/cmd/ReverseProxy/network/ws/control"
 	log "github.com/alecthomas/log4go"
 	"github.com/gorilla/websocket"
 )
