@@ -4,24 +4,23 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"github.com/golang/protobuf/proto"
 )
 
 type Packet struct {
-	len       int
-	version   int
-	mainCmd   uint16
-	subCmd    uint16
-	requestId uint32
-	data      []byte
+	len      int
+	version  int
+	mainCmd  uint16
+	subCmd   uint16
+	clientId uint32
+	data     []byte
 }
 
-func New(mainCmd, subCmd uint16, requestId uint32) *Packet {
+func New(mainCmd, subCmd uint16, clientId uint32) *Packet {
 	pk := &Packet{
-		version:   1,
-		mainCmd:   mainCmd,
-		subCmd:    subCmd,
-		requestId: requestId,
+		version:  1,
+		mainCmd:  mainCmd,
+		subCmd:   subCmd,
+		clientId: clientId,
 	}
 	return pk
 }
@@ -51,7 +50,7 @@ func (p *Packet) writeHead(buf *bytes.Buffer) (err error) {
 	if err = binary.Write(buf, binary.LittleEndian, p.subCmd); err != nil {
 		return err
 	}
-	if err = binary.Write(buf, binary.LittleEndian, p.requestId); err != nil {
+	if err = binary.Write(buf, binary.LittleEndian, p.clientId); err != nil {
 		return err
 	}
 
@@ -71,13 +70,13 @@ func (p *Packet) readHead(buf *bytes.Buffer) (err error) {
 	if err = binary.Read(buf, binary.LittleEndian, &p.subCmd); err != nil {
 		return err
 	}
-	if err = binary.Read(buf, binary.LittleEndian, &p.requestId); err != nil {
+	if err = binary.Read(buf, binary.LittleEndian, &p.clientId); err != nil {
 		return err
 	}
 	return err
 }
 
-//Encode 编码数据包
+// Encode 编码数据包
 func (p *Packet) Encode(data []byte) error {
 	buf := &bytes.Buffer{}
 	p.len = len(data) + 4 + 4 + 2 + 2 + 4
@@ -102,27 +101,6 @@ func (p *Packet) Encode(data []byte) error {
 	return nil
 }
 
-//EncodeProto 编码数据包
-func (p *Packet) EncodeProto(pb proto.Message) error {
-	if pb == nil {
-		err := p.Encode([]byte{})
-		if err != nil {
-			return err
-		}
-	} else {
-		data, err := proto.Marshal(pb)
-		if err != nil {
-			return err
-		}
-		err = p.Encode(data)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (p Packet) Version() int {
 	return p.version
 }
@@ -139,8 +117,8 @@ func (p Packet) SubMain() uint16 {
 	return p.subCmd
 }
 
-func (p Packet) RequestId() uint32 {
-	return p.requestId
+func (p Packet) ClientId() uint32 {
+	return p.clientId
 }
 
 func (p Packet) Data() []byte {
@@ -148,5 +126,5 @@ func (p Packet) Data() []byte {
 }
 
 func (p Packet) String() string {
-	return fmt.Sprintf("{len:%d version:%d mainCmd:%d subCmd:%d requestId:%d datalen:%d}", p.len, p.version, p.mainCmd, p.subCmd, p.requestId, len(p.data))
+	return fmt.Sprintf("{len:%d version:%d mainCmd:%d subCmd:%d clientId:%d datalen:%d}", p.len, p.version, p.mainCmd, p.subCmd, p.clientId, len(p.data))
 }
