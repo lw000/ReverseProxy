@@ -26,37 +26,21 @@ func (proxy *TCPProxy) Start(listenPort, targetPort int) {
 			log.Error("unable to accept a request, error: %s", err.Error())
 			continue
 		}
-		go proxy.runForward(conn, targetPort)
+		go proxy.handleConnect(conn, targetPort)
 	}
 }
 
-func (proxy *TCPProxy) runForward(conn net.Conn, targetPort int) {
+func (proxy *TCPProxy) handleConnect(conn net.Conn, targetPort int) {
 	defer func() {
 		if x := recover(); x != nil {
 			log.Error(x)
 		}
 	}()
 
-	buf := make([]byte, 1024)
-	n, err := conn.Read(buf)
-	if err != nil {
-		log.Error("unable to read from input, error: %s", err)
-		return
-	}
-
-	var targetConn net.Conn
-	targetConn, err = net.Dial("tcp", fmt.Sprintf(":%d", targetPort))
+	targetConn, err := net.Dial("tcp", fmt.Sprintf(":%d", targetPort))
 	if err != nil {
 		log.Error("unable to connect to: %d, error: %s", targetPort, err)
 		_ = conn.Close()
-		return
-	}
-
-	n, err = targetConn.Write(buf[:n])
-	if err != nil {
-		log.Error("unable to write to output, error: %s", err)
-		_ = conn.Close()
-		_ = targetConn.Close()
 		return
 	}
 
