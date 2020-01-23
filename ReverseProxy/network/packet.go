@@ -7,8 +7,8 @@ import (
 )
 
 type Packet struct {
-	len      int
-	version  int
+	len      int16
+	version  int8
 	mainCmd  uint16
 	subCmd   uint16
 	clientId uint32
@@ -79,7 +79,7 @@ func (p *Packet) readHead(buf *bytes.Buffer) (err error) {
 // Encode 编码数据包
 func (p *Packet) Encode(data []byte) error {
 	buf := &bytes.Buffer{}
-	p.len = len(data) + 4 + 4 + 2 + 2 + 4
+	p.len = int16(len(data)) + 2 + 1 + 2 + 2 + 4
 	err := p.writeHead(buf)
 	if err != nil {
 		return err
@@ -101,11 +101,11 @@ func (p *Packet) Encode(data []byte) error {
 	return nil
 }
 
-func (p Packet) Version() int {
+func (p Packet) Version() int8 {
 	return p.version
 }
 
-func (p Packet) Len() int {
+func (p Packet) Len() int16 {
 	return p.len
 }
 

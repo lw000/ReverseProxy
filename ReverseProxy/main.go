@@ -4,6 +4,7 @@ import (
 	"demo/ReverseProxy/ReverseProxy/config"
 	"demo/ReverseProxy/ReverseProxy/network"
 	"demo/ReverseProxy/ReverseProxy/proxy"
+	"encoding/binary"
 	"fmt"
 	log "github.com/alecthomas/log4go"
 	"math/rand"
@@ -87,8 +88,10 @@ func main() {
 	pk := network.New(1, 1, 1)
 	err := pk.Encode([]byte("111111111111111111111111"))
 	if err != nil {
-
+		return
 	}
+
+	log.Info(binary.Size(pk))
 
 	// m := mux.NewRouter()
 	// log.Exit(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), m))
