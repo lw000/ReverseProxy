@@ -1,7 +1,7 @@
 package main
 
 import (
-	"demo/gin_test/cmd/test/config"
+	"demo/gin_test/test/config"
 	"io/ioutil"
 	"log"
 	"net/http"

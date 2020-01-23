@@ -5,6 +5,12 @@ import (
 	"io/ioutil"
 )
 
+type Config struct {
+	Background []string `json:"background"`
+	Debug      int64    `json:"debug"`
+	Port       int64    `json:"port"`
+}
+
 func NewConfig() *Config {
 	return &Config{}
 }
@@ -14,11 +20,5 @@ func (c *Config) Load(file string) error {
 	if err != nil {
 		return err
 	}
-
-	err = json.Unmarshal(data, c)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return json.Unmarshal(data, c)
 }

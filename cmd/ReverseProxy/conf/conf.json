@@ -1,5 +1,0 @@
-{
-    "port": 19090,
-    "debug": 1,
-    "backgroudUrl": ["localhost:18081","localhost:18082"]
-}

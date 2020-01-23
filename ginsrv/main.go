@@ -2,7 +2,7 @@
 package main
 
 import (
-	"demo/gin_test/cmd/gin_test/config"
+	"demo/ReverseProxy/ginsrv/config"
 	"fmt"
 	"github.com/didip/tollbooth"
 	"github.com/didip/tollbooth_gin"
@@ -65,7 +65,7 @@ var secrets = gin.H{
 	"lena":   gin.H{"email": "lena@guapa.com", "phone": "523433"},
 }
 
-func installSignal() {
+func runSignal() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Kill)
 	signal.Notify(c, os.Interrupt)
@@ -83,7 +83,7 @@ func installSignal() {
 }
 
 func main() {
-	installSignal()
+	runSignal()
 
 	engine := gin.Default()
 	engine.Use(Cors())
@@ -101,7 +101,7 @@ func main() {
 	})
 
 	engine.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"ping": "pong", "timestamp": time.Now().Unix()})
+		c.JSON(http.StatusOK, gin.H{"timestamp": time.Now().Unix()})
 	})
 
 	engine.GET("/add", func(c *gin.Context) {
@@ -142,7 +142,7 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"data": ia + ib})
 	})
 
-	engine.GET("/redict", func(c *gin.Context) {
+	engine.GET("/redirect", func(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "https://www.baidu.com")
 	})
 
@@ -183,7 +183,7 @@ func main() {
 	})
 
 	cfg := config.NewConfig()
-	if er := cfg.Load("./conf/conf.json"); er != nil {
+	if er := cfg.Load("conf/conf.json"); er != nil {
 		return
 	}
 

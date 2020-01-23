@@ -1,1 +1,0 @@
-gojson.exe -pkg=config -name=Config -o=../config/configStruct.go -input=conf.json

@@ -1,0 +1,8 @@
+{
+    "debug":1,
+    "port":9999,
+    "background":[
+        "http://localhost:18081",
+        "http://127.0.0.1:18081"
+    ]
+}
