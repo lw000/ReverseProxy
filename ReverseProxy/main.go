@@ -3,6 +3,7 @@ package main
 import (
 	"demo/ReverseProxy/ReverseProxy/config"
 	"demo/ReverseProxy/ReverseProxy/network"
+	"demo/ReverseProxy/ReverseProxy/proxy"
 	"fmt"
 	log "github.com/alecthomas/log4go"
 	"math/rand"
@@ -91,6 +92,11 @@ func main() {
 
 	// m := mux.NewRouter()
 	// log.Exit(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), m))
+
+	go func() {
+		var py proxy.TCPProxy
+		py.Start(9600, 8001)
+	}()
 
 	proxyHandler := NewMultipleHostsReverseProxy(proxyConfig)
 	log.Exit(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), proxyHandler))
